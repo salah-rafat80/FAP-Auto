@@ -59,28 +59,32 @@ class AuthCubit extends Cubit<AuthState> {
 
     final result = await verifyOtpUseCase(_phoneNumber!, otp);
 
-    result.fold((failure) => emit(AuthError(message: failure.message)), (
-      response,
-    ) {
-      if (response.status == 'error') {
-        emit(
-          AuthError(
-            message:
-                response.messageAr ?? response.messageEn ?? 'Unknown error',
-          ),
+    if (result.isLeft()) {
+      final failure = result.fold((l) => l, (r) => null);
+      emit(AuthError(message: failure!.message));
+      return;
+    }
+
+    final response = result.fold((l) => null, (r) => r)!;
+
+    if (response.status == 'error') {
+      emit(
+        AuthError(
+          message: response.messageAr ?? response.messageEn ?? 'Unknown error',
+        ),
+      );
+    } else {
+      if (response.token != null) {
+        await sharedPreferences.setString('auth_token', response.token!);
+        // Save login session data including user name - await to ensure data is saved
+        await authSession.saveLoginData(
+          token: response.token!,
+          phone: _phoneNumber!,
+          userName: response.nameArabic ?? response.nameEnglish,
         );
-      } else {
-        if (response.token != null) {
-          sharedPreferences.setString('auth_token', response.token!);
-          // Save login session data
-          authSession.saveLoginData(
-            token: response.token!,
-            phone: _phoneNumber!,
-          );
-        }
-        emit(AuthVerified(response: response));
       }
-    });
+      emit(AuthVerified(response: response));
+    }
   }
 
   /// Logout and clear all session data

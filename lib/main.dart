@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fap/core/constants/app_theme.dart';
 import 'package:fap/core/utils/auth_session.dart';
 import 'package:fap/core/utils/security_service.dart';
+import 'package:fap/core/widgets/app_error_screen.dart';
 import 'package:fap/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:fap/features/auth/presentation/screens/login_screen/login_screen.dart';
 import 'package:fap/features/home/presentation/screens/home_screen.dart';
@@ -12,6 +13,11 @@ import 'package:fap/injection_container.dart' as di;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Set custom error widget to replace red screen of death
+  ErrorWidget.builder = (FlutterErrorDetails details) {
+    return customErrorWidget(details);
+  };
 
   // Enable screen security to prevent screenshots and screen recording - MANDATORY
   if (Platform.isAndroid) {

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:fap/core/utils/size_config.dart';
+import 'package:fap/core/utils/auth_session.dart';
+import 'package:fap/injection_container.dart';
 import 'package:fap/features/price_list/presentation/widgets/pdf_loading_view.dart';
 import 'package:fap/features/price_list/presentation/widgets/pdf_error_view.dart';
 import 'package:fap/features/price_list/presentation/widgets/pdf_zoom_controls.dart';
@@ -25,6 +27,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
   bool _isLoading = true;
   bool _snackShown = false;
   String? _errorMessage;
+  String? _userName;
   final PdfViewerController _pdfViewerController = PdfViewerController();
 
   late final bool _isNetworkUrl;
@@ -33,6 +36,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
   @override
   void initState() {
     super.initState();
+    _loadUserName();
     _isNetworkUrl =
         widget.pdfAssetPath.startsWith('http://') ||
         widget.pdfAssetPath.startsWith('https://');
@@ -108,10 +112,83 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
     }
   }
 
+  void _loadUserName() {
+    final authSession = sl<AuthSession>();
+    _userName = authSession.userName ?? 'FAP';
+  }
+
   @override
   void dispose() {
     _pdfViewerController.dispose();
     super.dispose();
+  }
+
+  /// Build watermark text widget
+  Widget _buildWatermarkText() {
+    return Transform.rotate(
+      angle: -0.5, // ~30 degrees rotation
+      child: Opacity(
+        opacity: 0.19,
+        child: Text(
+          _userName ?? 'FAP',
+          overflow: TextOverflow.ellipsis,
+          maxLines: 2,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+            letterSpacing: 3,
+            fontFamily: 'Tajawal',
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Build multiple watermarks across the screen
+  Widget _buildWatermarkOverlay() {
+    return IgnorePointer(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            // Top row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Flexible(child: _buildWatermarkText()),
+                Flexible(child: _buildWatermarkText()),
+              ],
+            ),
+            // Middle row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Flexible(child: _buildWatermarkText()),
+                Flexible(child: _buildWatermarkText()),
+              ],
+            ),
+            // Bottom row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Flexible(child: _buildWatermarkText()),
+                Flexible(child: _buildWatermarkText()),
+              ],
+            ),
+            // Extra row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Flexible(child: _buildWatermarkText()),
+                Flexible(child: _buildWatermarkText()),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -155,6 +232,8 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
                   children: [
                     Positioned.fill(child: _viewer),
                     if (_isLoading) const PdfLoadingView(),
+                    // Multiple watermarks overlay with user name
+                    Positioned.fill(child: _buildWatermarkOverlay()),
                   ],
                 ),
         ),
