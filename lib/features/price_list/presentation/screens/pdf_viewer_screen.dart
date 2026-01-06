@@ -132,12 +132,12 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
         child: Text(
           _userName ?? 'FAP',
           overflow: TextOverflow.ellipsis,
-          maxLines: 2,
+          maxLines: 1,
           style: TextStyle(
-            fontSize: 20,
+            fontSize: 15,
             fontWeight: FontWeight.bold,
             color: Colors.black,
-            letterSpacing: 3,
+            letterSpacing: 0.5,
             fontFamily: 'Tajawal',
           ),
         ),
@@ -158,7 +158,10 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Flexible(child: _buildWatermarkText()),
+
                 Flexible(child: _buildWatermarkText()),
+
+                SizedBox(width: 25),
               ],
             ),
             // Middle row
@@ -167,6 +170,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
               children: [
                 Flexible(child: _buildWatermarkText()),
                 Flexible(child: _buildWatermarkText()),
+                SizedBox(width: 25),
               ],
             ),
             // Bottom row
@@ -175,6 +179,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
               children: [
                 Flexible(child: _buildWatermarkText()),
                 Flexible(child: _buildWatermarkText()),
+                SizedBox(width: 25),
               ],
             ),
             // Extra row
@@ -183,6 +188,23 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
               children: [
                 Flexible(child: _buildWatermarkText()),
                 Flexible(child: _buildWatermarkText()),
+                SizedBox(width: 25),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Flexible(child: _buildWatermarkText()),
+                Flexible(child: _buildWatermarkText()),
+                SizedBox(width: 25),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Flexible(child: _buildWatermarkText()),
+                Flexible(child: _buildWatermarkText()),
+                SizedBox(width: 25),
               ],
             ),
           ],

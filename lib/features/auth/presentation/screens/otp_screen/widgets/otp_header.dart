@@ -32,6 +32,19 @@ class OtpHeader extends StatelessWidget {
             fontFamily: 'Tajawal',
           ),
         ),
+        // if (otp != null) ...[
+        //   SizedBox(height: SizeConfig.h(1)),
+        //   Text(
+        //     'OTP: $otp',
+        //     textAlign: TextAlign.center,
+        //     style: TextStyle(
+        //       fontSize: SizeConfig.sp(8),
+        //       fontWeight: FontWeight.bold,
+        //       color: Colors.green,
+        //       fontFamily: 'Tajawal',
+        //     ),
+        //   ),
+        // ],
       ],
     );
   }
